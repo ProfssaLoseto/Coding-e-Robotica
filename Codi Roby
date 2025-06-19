@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cody Roby e Code Week</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .presentation-container {
+            width: 90%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .slide {
+            display: none;
+            padding: 60px;
+            min-height: 600px;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 2.2em;
+            color: #3498db;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.8em;
+            color: #e74c3c;
+            margin: 20px 0 15px 0;
+        }
+
+        p, li {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #34495e;
+            margin-bottom: 15px;
+        }
+
+        .card-demo {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            width: 120px;
+            height: 160px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card.forward { background: linear-gradient(45deg, #2ecc71, #27ae60); }
+        .card.left { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+        .card.right { background: linear-gradient(45deg, #f39c12, #e67e22); }
+
+        .interactive-demo {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 60px);
+            grid-template-rows: repeat(5, 60px);
+            gap: 2px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .cell {
+            background: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            transition: all 0.3s ease;
+        }
+
+        .cell.roby {
+            background: #3498db;
+            color: white;
+        }
+
+        .cell.visited {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: rgba(52, 73, 94, 0.9);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover {
+            background: rgba(52, 73, 94, 1);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(52, 73, 94, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.1em;
+            backdrop-filter: blur(10px);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .africa-colors {
+            background: linear-gradient(135deg, #f39c12, #e67e22, #e74c3c, #2ecc71);
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+
+        .emoji {
+            font-size: 2em;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Titolo -->
+        <div class="slide active">
+            <h1>🎮 Cody Roby &  Code Week 🌍</h1>
+            <div style="text-align: center; margin: 50px 0;">
+                <div class="emoji">🤖</div>
+                <p style="font-size: 1.5em; color: #2c3e50; margin: 30px 0;">
+                    Imparare il coding senza computer attraverso il gioco
+                </p>
+                <div class="emoji">🎯</div>
+            </div>
+            <div class="highlight">
+                <p><strong>Coding Unplugged:</strong> Una metodologia innovativa per insegnare i concetti di programmazione attraverso attività pratiche e divertenti, senza l'uso di dispositivi digitali.</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Cos'è Cody Roby -->
+        <div class="slide">
+            <h2>🤖 Cos'è Cody Roby?</h2>
+            <p>Cody Roby è un gioco di carte educativo creato per insegnare i fondamenti della programmazione attraverso il gioco unplugged.</p>
+            
+            <h3>I Protagonisti:</h3>
+            <div style="display: flex; justify-content: space-around; margin: 30px 0;">
+                <div style="text-align: center;">
+                    <div class="emoji">👨‍💻</div>
+                    <h4>CODY</h4>
+                    <p>Il programmatore che scrive le istruzioni</p>
+                </div>
+                <div style="text-align: center;">
+                    <div class="emoji">🤖</div>
+                    <h4>ROBY</h4>
+                    <p>Il robot che esegue i comandi</p>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <p><strong>Obiettivo:</strong> Roby deve raggiungere la meta seguendo le istruzioni date da Cody attraverso le carte comando.</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: Le Carte Comando -->
+        <div class="slide">
+            <h2>🎯 Le Carte Comando</h2>
+            <p>Il gioco utilizza tre tipi di carte fondamentali:</p>
+            
+            <div class="card-demo">
+                <div class="card forward" onclick="animateCard(this)">
+                    <div class="emoji">⬆️</div>
+                    <div>AVANTI</div>
+                </div>
+                <div class="card left" onclick="animateCard(this)">
+                    <div class="emoji">⬅️</div>
+                    <div>SINISTRA</div>
+                </div>
+                <div class="card right" onclick="animateCard(this)">
+                    <div class="emoji">➡️</div>
+                    <div>DESTRA</div>
+                </div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>⬆️ Avanti</h3>
+                    <p>Muove Roby di una casella in avanti nella direzione in cui è orientato</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⬅️ Sinistra</h3>
+                    <p>Ruota Roby di 90° verso sinistra senza spostarlo</p>
+                </div>
+                <div class="feature-card">
+                    <h3>➡️ Destra</h3>
+                    <p>Ruota Roby di 90° verso destra senza spostarlo</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Demo Interattiva -->
+        <div class="slide">
+            <h2>🎮 Prova Cody Roby!</h2>
+            <div class="interactive-demo">
+                <p>Clicca sui pulsanti per muovere Roby sulla griglia:</p>
+                <div class="grid" id="gameGrid"></div>
+                <div class="controls">
+                    <button class="btn btn-success" onclick="moveForward()">⬆️ Avanti</button>
+                    <button class="btn btn-warning" onclick="turnLeft()">⬅️ Sinistra</button>
+                    <button class="btn btn-danger" onclick="turnRight()">➡️ Destra</button>
+                    <button class="btn btn-primary" onclick="resetGame()">🔄 Reset</button>
+                </div>
+                <p id="gameStatus">Roby è pronto per ricevere comandi!</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: Benefici Educativi -->
+        <div class="slide">
+            <h2>🎓 Benefici Educativi</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🧠 Pensiero Computazionale</h3>
+                    <p>Sviluppa problem solving, decomposizione dei problemi e pensiero logico</p>
+                </div>
+                <div class="feature-card">
+                    <h3>👥 Collaborazione</h3>
+                    <p>Promuove il lavoro di squadra e la comunicazione efficace</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🎯 Concentrazione</h3>
+                    <p>Migliora l'attenzione e la capacità di seguire sequenze di istruzioni</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🌟 Creatività</h3>
+                    <p>Stimola la creatività nella risoluzione di problemi complessi</p>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>🏆 Competenze del 21° Secolo</h3>
+                <p>Cody Roby e le iniziative unplugged preparano i giovani alle sfide del futuro, sviluppando competenze trasversali essenziali nell'era digitale.</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Come Iniziare -->
+        <div class="slide">
+            <h2>🚀 Come Iniziare</h2>
+            
+            <h3>Per gli Insegnanti:</h3>
+            <div class="highlight">
+                <p>📥 <strong>Download gratuito del kit completo:</strong></p>
+                <p>🔗 <a href="https://www.codeweek.it/cody-roby/kit-fai-da-te/" target="_blank" style="color: #3498db; text-decoration: none; font-weight: bold;">www.codeweek.it/cody-roby/kit-fai-da-te/</a></p>
+                <p>Il kit include: 40 carte comando, scatola porta-carte, scacchiera e 5 pedine</p>
+                <br>
+                <p>📋 <strong>Istruzioni per l'uso:</strong></p>
+                <p>• Stampa il kit (5 pagine A4, preferibilmente a colori su cartoncino 250g)</p>
+                <p>• Ritaglia carte, scacchiera e pedine seguendo i contorni</p>
+                <p>• Costruisci la scatola seguendo le piegature</p>
+                <p>• Inizia con esercizi semplici e aumenta gradualmente la difficoltà</p>
+                <p>• Incoraggia la collaborazione tra studenti</p>
+            </div>
+
+            <h3>Varianti del Gioco:</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h4>🎲 Modo Libero</h4>
+                    <p>Gli studenti creano percorsi e sfide personalizzate</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🏁 Modo Gara</h4>
+                    <p>Competizioni a squadre per raggiungere obiettivi specifici</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🎭 Modo Storia</h4>
+                    <p>Percorsi tematici con narrativa e personaggi</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px; padding: 20px; background: #ecf0f1; border-radius: 10px;">
+                <p style="font-size: 1.1em; color: #2c3e50;"><strong>💡 Suggerimento:</strong> Usa l'hashtag <span style="color: #3498db;">#CodyRoby</span> per condividere le tue esperienze e seguire gli aggiornamenti!</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Conclusioni -->
+        <div class="slide">
+            <h2>🎯 Conclusioni</h2>
+            <div style="text-align: center; margin: 40px 0;">
+                <div class="emoji">🌟</div>
+                <h3>Il Futuro dell'Educazione Digitale</h3>
+            </div>
+            
+            <div class="highlight">
+                <p><strong>Cody Roby</strong> e <strong> Code Week</strong> dimostrano che l'apprendimento del coding può essere:</p>
+                <ul style="font-size: 1.2em; margin: 20px 0;">
+                    <li>🎮 <strong>Divertente</strong> - Attraverso il gioco</li>
+                    <li>🌍 <strong>Accessibile</strong> - Senza bisogno di tecnologia</li>
+                    <li>🤝 <strong>Inclusivo</strong> - Per tutti i bambini del mondo</li>
+                    <li>💪 <strong>Efficace</strong> - Nello sviluppo di competenze essenziali</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin: 40px 0;">
+                <p style="font-size: 1.5em; color: #2c3e50;">
+                    <strong>Il coding unplugged apre le porte del futuro digitale a tutti! 🚀</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-counter">
+        <span id="currentSlide">1</span> / <span id="totalSlides">8</span>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Precedente</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Successiva →</button>
+    </div>
+
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        // Game state
+        let robyPosition = { x: 2, y: 2 };
+        let robyDirection = 0; // 0: up, 1: right, 2: down, 3: left
+        const gridSize = 5;
+        
+        // Initialize presentation
+        function initPresentation() {
+            document.getElementById('totalSlides').textContent = totalSlides;
+            updateSlideCounter();
+            updateNavigationButtons();
+            initGame();
+        }
+        
+        function changeSlide(direction) {
+            slides[currentSlideIndex].classList.remove('active');
+            currentSlideIndex += direction;
+            
+            if (currentSlideIndex >= totalSlides) currentSlideIndex = 0;
+            if (currentSlideIndex < 0) currentSlideIndex = totalSlides - 1;
+            
+            slides[currentSlideIndex].classList.add('active');
+            updateSlideCounter();
+            updateNavigationButtons();
+        }
+        
+        function updateSlideCounter() {
+            document.getElementById('currentSlide').textContent = currentSlideIndex + 1;
+        }
+        
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentSlideIndex === 0;
+            nextBtn.disabled = currentSlideIndex === totalSlides - 1;
+        }
+        
+        function animateCard(card) {
+            card.style.transform = 'scale(1.2) rotate(10deg)';
+            setTimeout(() => {
+                card.style.transform = 'scale(1) rotate(0deg)';
+            }, 200);
+        }
+        
+        // Game functions
+        function initGame() {
+            const grid = document.getElementById('gameGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            for (let y = 0; y < gridSize; y++) {
+                for (let x = 0; x < gridSize; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.x = x;
+                    cell.dataset.y = y;
+                    grid.appendChild(cell);
+                }
+            }
+            
+            updateRobyPosition();
+        }
+        
+        function updateRobyPosition() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                cell.classList.remove('roby');
+                cell.textContent = '';
+            });
+            
+            const robyCell = document.querySelector(`[data-x="${robyPosition.x}"][data-y="${robyPosition.y}"]`);
+            if (robyCell) {
+                robyCell.classList.add('roby');
+                const directions = ['⬆️', '➡️', '⬇️', '⬅️'];
+                robyCell.textContent = directions[robyDirection];
+            }
+        }
+        
+        function moveForward() {
+            const newPos = { ...robyPosition };
+            
+            switch (robyDirection) {
+                case 0: newPos.y = Math.max(0, newPos.y - 1); break; // up
+                case 1: newPos.x = Math.min(gridSize - 1, newPos.x + 1); break; // right
+                case 2: newPos.y = Math.min(gridSize - 1, newPos.y + 1); break; // down
+                case 3: newPos.x = Math.max(0, newPos.x - 1); break; // left
+            }
+            
+            // Mark previous position as visited
+            const prevCell = document.querySelector(`[data-x="${robyPosition.x}"][data-y="${robyPosition.y}"]`);
+            if (prevCell) {
+                prevCell.classList.add('visited');
+            }
+            
+            robyPosition = newPos;
+            updateRobyPosition();
+            updateGameStatus('Roby si è mosso in avanti! 🤖');
+        }
+        
+        function turnLeft() {
+            robyDirection = (robyDirection + 3) % 4;
+            updateRobyPosition();
+            updateGameStatus('Roby ha girato a sinistra! ↩️');
+        }
+        
+        function turnRight() {
+            robyDirection = (robyDirection + 1) % 4;
+            updateRobyPosition();
+            updateGameStatus('Roby ha girato a destra! ↪️');
+        }
+        
+        function resetGame() {
+            robyPosition = { x: 2, y: 2 };
+            robyDirection = 0;
+            
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                cell.classList.remove('visited');
+            });
+            
+            updateRobyPosition();
+            updateGameStatus('Roby è tornato alla posizione iniziale! 🔄');
+        }
+        
+        function updateGameStatus(message) {
+            const status = document.getElementById('gameStatus');
+            if (status) {
+                status.textContent = message;
+                status.style.color = '#27ae60';
+                status.style.fontWeight = 'bold';
+                
+                setTimeout(() => {
+                    status.style.color = '#34495e';
+                    status.style.fontWeight = 'normal';
+                }, 2000);
+            }
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                changeSlide(-1);
+            } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                changeSlide(1);
+            }
+        });
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initPresentation);
+    </script>
+</body>
+</html>
